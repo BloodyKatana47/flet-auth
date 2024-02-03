@@ -18,7 +18,7 @@ cursor.executescript('''
     );
     CREATE TABLE IF NOT EXISTS users (
         user_id INTEGER PRIMARY KEY,
-        username TEXT,
+        username TEXT UNIQUE,
         password TEXT
     );
     COMMIT;
