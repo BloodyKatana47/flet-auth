@@ -1,28 +1,37 @@
 import flet
+from flet_core import ControlEvent
 
 from database import Database
 
 db = Database()
-FONT_FAMILY = 'Rajdhani'
 
 
-def main(page: flet.Page):
+async def main(page: flet.Page):
     page.title = 'To Do | Authentication'
     page.theme_mode = 'dark'
     page.vertical_alignment = flet.MainAxisAlignment.CENTER
     page.fonts = {
-        'Rajdhani': 'Rajdhani/Rajdhani-Medium.ttf'
+        'Rajdhani': 'fonts/Rajdhani/Rajdhani-Medium.ttf'
     }
-    page.update()
+    page.theme = flet.Theme(font_family='Rajdhani')
+    await page.update_async()
 
     # auth panel
 
-    def validate(e):
-        if all([username_panel.value, password_panel.value]):
+    async def validate(e: ControlEvent):
+        username = username_panel.value
+        password = password_panel.value
+        if all([username, password]):
             btn_auth.disabled = False
-        page.update()
+            btn_register.disabled = False
+        elif not username or not password:
+            btn_auth.disabled = True
+            btn_register.disabled = True
+        username_panel.border_color = None
+        password_panel.border_color = None
+        await page.update_async()
 
-    def auth(e):
+    async def auth(e):
         username = username_panel.value
         password = password_panel.value
         if len(username) > 0 and len(password) > 0:
@@ -31,15 +40,18 @@ def main(page: flet.Page):
                 print(200)
             else:
                 print(404)
+                username_panel.border_color = 'red'
+                password_panel.border_color = 'red'
+        await page.update_async()
 
-    def register(e):
+    async def register(e):
         username = username_panel.value
         password = password_panel.value
         if len(username) > 0 and len(password) > 0:
             create_user = db.create_user(username=username, password=password)
             print(create_user)
 
-    def move_to_register(e):
+    async def move_to_register(e):
         page.route = '/registration'
         page.title = 'To Do | Registration'
 
@@ -56,9 +68,9 @@ def main(page: flet.Page):
             )
         )
 
-        page.update()
+        await page.update_async()
 
-    def move_to_login(e):
+    async def move_to_login(e):
         page.route = '/'
         page.title = 'To Do | Authentication'
 
@@ -75,10 +87,10 @@ def main(page: flet.Page):
             )
         )
 
-        page.update()
+        await page.update_async()
 
     app_label = flet.Container(
-        content=flet.Text(value='To Do app on Flet', size=25, font_family=FONT_FAMILY),
+        content=flet.Text(value='To Do app on Flet', size=25),
         margin=flet.Margin(bottom=40, top=0, left=0, right=0),
         alignment=flet.Alignment(0, 0)
     )
@@ -86,14 +98,12 @@ def main(page: flet.Page):
     username_panel = flet.TextField(
         label='username',
         width=250,
-        on_change=validate,
-        label_style=flet.TextStyle(font_family=FONT_FAMILY)
+        on_change=validate
     )
     password_panel = flet.TextField(
         label='password',
         width=250,
         on_change=validate,
-        label_style=flet.TextStyle(font_family=FONT_FAMILY),
         password=True
     )
     btn_auth = flet.OutlinedButton(
@@ -113,7 +123,7 @@ def main(page: flet.Page):
         controls=[
             flet.Column(
                 [
-                    flet.Text(value='Authentication', font_family=FONT_FAMILY),
+                    flet.Text(value='Authentication'),
                     username_panel,
                     password_panel,
                     btn_auth
@@ -125,7 +135,7 @@ def main(page: flet.Page):
         controls=[
             flet.Column(
                 [
-                    flet.Text(value='Registration', font_family=FONT_FAMILY),
+                    flet.Text(value='Registration'),
                     username_panel,
                     password_panel,
                     btn_register
@@ -145,8 +155,8 @@ def main(page: flet.Page):
         alignment=flet.Alignment(0, 0),
     )
 
-    page.add(app_label, auth_panel, btn_move_to_register)
+    await page.add_async(app_label, auth_panel, btn_move_to_register)
 
 
 if __name__ == '__main__':
-    flet.app(target=main, view=flet.AppView.WEB_BROWSER, port=8734, assets_dir='fonts')
+    flet.app(target=main, view=flet.AppView.WEB_BROWSER, port=8734)
