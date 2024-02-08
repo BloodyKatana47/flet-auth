@@ -29,29 +29,33 @@ async def main(page: flet.Page):
             btn_register.disabled = True
         username_panel.border_color = None
         password_panel.border_color = None
+        btn_auth.text = 'Login'
+        btn_register.text = 'Register'
         await page.update_async()
 
-    async def auth(e):
+    async def auth(e: ControlEvent):
         username = username_panel.value
         password = password_panel.value
         if len(username) > 0 and len(password) > 0:
             user_exists = db.auth_user(username=username, password=password)
             if user_exists:
-                print(200)
+                btn_auth.text = 'Logged in successfully!'
+                await page.update_async()
             else:
-                print(404)
                 username_panel.border_color = 'red'
                 password_panel.border_color = 'red'
         await page.update_async()
 
-    async def register(e):
+    async def register(e: ControlEvent):
         username = username_panel.value
         password = password_panel.value
         if len(username) > 0 and len(password) > 0:
             create_user = db.create_user(username=username, password=password)
-            print(create_user)
+            if create_user:
+                btn_register.text = 'Registered successfully!'
+                await page.update_async()
 
-    async def move_to_register(e):
+    async def move_to_register(e: ControlEvent):
         page.route = '/registration'
         page.title = 'To Do | Registration'
 
@@ -70,7 +74,7 @@ async def main(page: flet.Page):
 
         await page.update_async()
 
-    async def move_to_login(e):
+    async def move_to_login(e: ControlEvent):
         page.route = '/'
         page.title = 'To Do | Authentication'
 
