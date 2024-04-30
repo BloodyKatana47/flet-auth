@@ -19,6 +19,7 @@ class Database:
         """
         Sets connection to database.
         """
+
         self.connection = sqlite3.connect(database=database, check_same_thread=False)
         if len(database) == 0:
             raise ValueError('DATABASE_NAME can not be empty')
@@ -30,6 +31,7 @@ class Database:
         """
         Creates table if not exists.
         """
+
         with self.connection:
             self.cursor.execute(
                 '''
@@ -45,6 +47,7 @@ class Database:
         """
         Creates user.
         """
+
         with self.connection:
             result = self.cursor.execute(
                 '''
@@ -58,6 +61,7 @@ class Database:
         """
         Check users authentication credentials.
         """
+
         with self.connection:
             result = self.cursor.execute(
                 '''

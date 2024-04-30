@@ -6,8 +6,12 @@ from database import Database
 db = Database()
 
 
-async def main(page: flet.Page):
-    page.title = 'To Do | Authentication'
+async def main(page: flet.Page) -> None:
+    """
+    Auth panel.
+    """
+
+    page.title = 'Authentication'
     page.theme_mode = 'dark'
     page.vertical_alignment = flet.MainAxisAlignment.CENTER
     page.fonts = {
@@ -16,9 +20,11 @@ async def main(page: flet.Page):
     page.theme = flet.Theme(font_family='Rajdhani')
     await page.update_async()
 
-    # auth panel
+    async def validate(e: ControlEvent) -> None:
+        """
+        Validates inputs filling.
+        """
 
-    async def validate(e: ControlEvent):
         username = username_panel.value
         password = password_panel.value
         if all([username, password]):
@@ -33,7 +39,11 @@ async def main(page: flet.Page):
         btn_register.text = 'Register'
         await page.update_async()
 
-    async def auth(e: ControlEvent):
+    async def auth(e: ControlEvent) -> None:
+        """
+        Authenticates user if given credentials are valid.
+        """
+
         username = username_panel.value
         password = password_panel.value
         if len(username) > 0 and len(password) > 0:
@@ -46,7 +56,11 @@ async def main(page: flet.Page):
                 password_panel.border_color = 'red'
         await page.update_async()
 
-    async def register(e: ControlEvent):
+    async def register(e: ControlEvent) -> None:
+        """
+        Registers user.
+        """
+
         username = username_panel.value
         password = password_panel.value
         if len(username) > 0 and len(password) > 0:
@@ -55,9 +69,13 @@ async def main(page: flet.Page):
                 btn_register.text = 'Registered successfully!'
                 await page.update_async()
 
-    async def move_to_register(e: ControlEvent):
+    async def move_to_register(e: ControlEvent) -> None:
+        """
+        Updates page for registration.
+        """
+
         page.route = '/registration'
-        page.title = 'To Do | Registration'
+        page.title = 'Registration'
 
         page.views.clear()
         page.views.append(
@@ -74,9 +92,13 @@ async def main(page: flet.Page):
 
         await page.update_async()
 
-    async def move_to_login(e: ControlEvent):
+    async def move_to_login(e: ControlEvent) -> None:
+        """
+        Updates page for authentication.
+        """
+
         page.route = '/'
-        page.title = 'To Do | Authentication'
+        page.title = 'Authentication'
 
         page.views.clear()
         page.views.append(
@@ -94,7 +116,7 @@ async def main(page: flet.Page):
         await page.update_async()
 
     app_label = flet.Container(
-        content=flet.Text(value='To Do app on Flet', size=25),
+        content=flet.Text(value='Authentication/registration app on Flet', size=25),
         margin=flet.Margin(bottom=40, top=0, left=0, right=0),
         alignment=flet.Alignment(0, 0)
     )
